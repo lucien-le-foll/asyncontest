@@ -1,10 +1,10 @@
-import CreditForm from "./features/CreditForm.jsx";
+import FormScreen from "./screens/FormScreen.jsx";
 
 function App() {
 
   return (
     <>
-      <CreditForm></CreditForm>
+      <FormScreen></FormScreen>
     </>
   )
 }

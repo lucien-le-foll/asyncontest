@@ -1,15 +1,15 @@
 import {useEffect, useState} from "react";
 
-import {Box, Button} from "@mui/joy";
+import {Box, Button, Typography} from "@mui/joy";
 import {Step, StepContent, StepLabel, Stepper} from "@mui/material";
 
-import VehicleForm from "./VehicleForm.jsx";
-import DriverForm from "./DriverForm.jsx";
-import ResultPage from "./ResultPage.jsx";
+import VehicleForm from "../features/VehicleForm.jsx";
+import DriverForm from "../features/DriverForm.jsx";
+import ResultPage from "../features/ResultPage.jsx";
 
 import database from "../assets/database.js";
 
-export default function CreditForm() {
+export default function FormScreen() {
     const [activeStep, setActiveStep] = useState(0)
     const [vehicleType, setVehicleType] = useState('Citadine')
     const [energy, setEnergy] = useState('Electrique')
@@ -23,7 +23,7 @@ export default function CreditForm() {
         eco_score += database.vehicle_types.find(value => value.name === vehicleType).eco_score
         eco_score += database.energies.find(value => value.name === energy).eco_score
         eco_score += database.yearly_mileage.find((value) => value.bottom_mileage <= mileage && value.top_mileage >= mileage).eco_score
-        eco_score += database.years.find((value) => value.start <= year && value.end >= year).eco_score
+        eco_score += database.years.find((value) => value.start <= year && value.end > year).eco_score
 
         let proposedRate = database.credit_rates.find((value) => {
             return (value.bottom_score <= eco_score && value.top_score >= eco_score)
@@ -35,6 +35,10 @@ export default function CreditForm() {
     }, [vehicleType, energy, mileage, year, passenger]);
 
     const steps = [
+        {
+            label: "Présentation",
+            content: <Typography>Vous voulez changer de voiture ? Bénéficiez d'un taux de crédit intéressant en fonction du véhicule souhaité et de vos habitudes de consomation</Typography>
+        },
         {
             label: "Votre véhicule",
             content: <VehicleForm
@@ -77,7 +81,7 @@ export default function CreditForm() {
 
     return (
         <Box sx={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
-            <Stepper activeStep={activeStep} orientation="vertical" sx={{ width : '50vw', height: '50vh' }}>
+            <Stepper activeStep={activeStep} orientation="vertical" sx={{ width : '45vw', height: '50vh' }}>
                 {steps.map((step, index) => (
                     <Step key={index}>
                         <StepLabel>
@@ -87,22 +91,23 @@ export default function CreditForm() {
                             <Box>
                                 {step.content}
                             </Box>
-                            <Box sx={{ mb: 2 }}>
-                                <div>
+                            <Box sx={{ mb: 2 , mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
+                                <div sx={{}}>
                                     <Button
-                                        variant="contained"
-                                        onClick={handleNext}
-                                        sx={{ mt: 1, mr: 1 }}
-                                    >
-                                        {index === steps.length - 1 ? '' : 'Continuer'}
-                                    </Button>
-                                    <Button
+                                        variant="soft"
                                         disabled={index === 0}
                                         onClick={handleBack}
                                         sx={{ mt: 1, mr: 1 }}
                                     >
                                         Retour
                                     </Button>
+                                    { index !== steps.length -1 && <Button
+                                        variant="solid"
+                                        onClick={handleNext}
+                                        sx={{ mt: 1, mr: 1 }}
+                                    >
+                                        {index === steps.length - 1 ? '' : 'Continuer'}
+                                    </Button>}
                                 </div>
                             </Box>
                         </StepContent>
